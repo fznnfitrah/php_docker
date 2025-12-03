@@ -1,0 +1,46 @@
+services:
+  php: 
+    build: .
+    container_name: php-container
+    volumes: 
+      - ./src:/var/www/html
+    networks:
+      - app-networks
+  
+  nginx: 
+    image: nginx:latest
+    container_name: nginx-container
+    ports: 
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - app-networks
+
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports: 
+      - "${MYSQL_PORT}:3306"
+    depends_on:
+      - nginx
+    networks:
+      - app-networks
+    
+
+networks : 
+  app-networks:
+    driver: bridge
+
+volumes :
+  db_data:
