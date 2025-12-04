@@ -1,13 +1,15 @@
 <?php
 // src/db.php
 
-$host = 'mysql';      // Nama service di docker-compose
-$db   = 'mydb';       // Nama database
-$user = 'user';       // <--- Ubah jadi string 'user' (sesuai .env Anda)
-$pass = 'userpass';   // <--- Ubah jadi string 'userpass' (sesuai .env Anda)
+$host = getenv("MYSQL_HOST");      // Nama service di docker-compose (sebelumnya MQL_HOST)
+$db   = getenv('MYSQL_DB');       // Nama database
+$user = getenv("MYSQL_USER");       // <--- Ubah jadi string 'user' (sesuai .env Anda)
+$pass = getenv('MYSQL_PASS');   // <--- Ubah jadi string 'userpass' (sesuai .env Anda)
+$port = getenv('MYSQL_PORT'); // Ambil port dari ENV atau default ke 3306
 $charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+// Tambahkan 'port=$port;' ke dalam string DSN
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
